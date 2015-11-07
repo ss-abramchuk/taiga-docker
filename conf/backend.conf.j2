@@ -1,0 +1,49 @@
+{% macro get_scheme() -%}{% if TAIGA_SSL_ENABLE|default('False') == 'True' %}https{% else %}http{% endif %}{%- endmacro %}
+
+from .common import *
+
+DATABASES = {
+   'default': {
+       'ENGINE': 'transaction_hooks.backends.postgresql_psycopg2',
+       'NAME': '{{ TAIGA_POSTGRES_DB }}',
+       'USER': '{{ TAIGA_POSTGRES_USER }}',
+       'PASSWORD': '{{ TAIGA_POSTGRES_PASSWORD }}',
+       'HOST': '{{ DBSERVER_PORT_5432_TCP_ADDR }}',
+       'PORT': '{{ DBSERVER_PORT_5432_TCP_PORT }}',
+   }
+}
+
+HOST = '{{ HOSTNAME }}'
+
+MEDIA_ROOT = '/home/app/taiga/media'
+MEDIA_URL = '{{ get_scheme() }}://{{ TAIGA_DOMAIN }}/media/'
+
+STATIC_ROOT = '/home/app/taiga/static'
+STATIC_URL = '{{ get_scheme() }}://{{ TAIGA_DOMAIN }}/static/'
+
+ADMIN_MEDIA_PREFIX = '{{ get_scheme() }}://{{ TAIGA_DOMAIN }}/static/admin/'
+
+SITES["front"]["scheme"] = '{{ get_scheme() }}'
+SITES["front"]["domain"] = '{{ TAIGA_DOMAIN }}'
+SITES["api"]["scheme"] = '{{ get_scheme() }}'
+SITES["api"]["domain"] = '{{ TAIGA_DOMAIN }}'
+
+SECRET_KEY = '{{ TAIGA_SECRET_KEY }}'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = {{ TAIGA_EMAIL_USE_TLS }}
+EMAIL_USE_SSL = {{ TAIGA_EMAIL_USE_SSL }}
+EMAIL_HOST = '{{ TAIGA_EMAIL_HOST }}'
+EMAIL_PORT = {{ TAIGA_EMAIL_PORT }}
+{% if TAIGA_EMAIL_HOST_USER|default('None') != 'None' %}EMAIL_HOST_USER = '{{ TAIGA_EMAIL_HOST_USER }}'{% endif %}
+{% if TAIGA_EMAIL_HOST_PASSWORD|default('None') != 'None' %}EMAIL_HOST_PASSWORD = '{{ TAIGA_EMAIL_HOST_PASSWORD }}'{% endif %}
+DEFAULT_FROM_EMAIL = '{{ TAIGA_DEFAULT_FROM_EMAIL }}'
+
+DEBUG = {{ TAIGA_DEBUG }}
+TEMPLATE_DEBUG = {{ TAIGA_DEBUG }}
+PUBLIC_REGISTER_ENABLED = {{ TAIGA_PUBLIC_REGISTER_ENABLED }}
+
+{% if TAIGA_EVENTS_ENABLE|default('False') == 'True' %}
+EVENTS_PUSH_BACKEND = "taiga.events.backends.rabbitmq.EventsPushBackend"
+EVENTS_PUSH_BACKEND_OPTIONS = {"url": "amqp://{{ TAIGA_RABBITMQ_USER }}:{{ TAIGA_RABBITMQ_PASSWORD }}@eventserver:5672/{{ TAIGA_RABBITMQ_VHOST }}"}
+{% endif %}
