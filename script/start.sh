@@ -4,7 +4,7 @@
 j2 /home/app/taiga/conf-template/vhost.conf.j2 > /etc/nginx/sites-enabled/vhost.conf
 j2 /home/app/taiga/conf-template/backend.conf.j2 > /home/app/taiga/back-end/settings/local.py
 j2 /home/app/taiga/conf-template/events.conf.j2 > /home/app/taiga/events/config.json
-j2 /home/app/taiga/conf-template/frontend.conf.j2 > /home/app/taiga/front-end/dist/js/conf.json
+j2 /home/app/taiga/conf-template/frontend.conf.j2 > /home/app/taiga/front-end/dist/conf.json
 
 # Configure ssl
 if [ "$TAIGA_SSL_ENABLE" = True -a ! -z "${TAIGA_SSL_KEY}" -a ! -z "${TAIGA_SSL_CERT}" ]
