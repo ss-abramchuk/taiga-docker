@@ -31,9 +31,8 @@ ENV HOME=/root \
 RUN apt-get update && apt-get install -y \
     build-essential binutils-doc autoconf flex bison libjpeg-dev libxml2-dev libpq-dev \
     libxslt-dev libfreetype6-dev zlib1g-dev libzmq3-dev libgdbm-dev libncurses5-dev \
-    automake libtool libffi-dev tmux gettext netcat postgresql-client
-RUN apt-get install -y python3 python python3-pip python-pip python3-dev python-dev
-RUN apt-get install -y nodejs
+    automake libtool libffi-dev tmux gettext netcat postgresql-client \
+    python3 python python3-pip python-pip python3-dev python-dev nodejs
 
 # Installing Taiga back-end
 RUN mkdir -p /home/app/taiga && \
