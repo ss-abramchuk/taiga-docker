@@ -4,12 +4,12 @@ from .common import *
 
 DATABASES = {
    'default': {
-       'ENGINE': 'transaction_hooks.backends.postgresql_psycopg2',
+       'ENGINE': 'django.db.backends.postgresql',
        'NAME': '{{ TAIGA_POSTGRES_DB }}',
        'USER': '{{ TAIGA_POSTGRES_USER }}',
        'PASSWORD': '{{ TAIGA_POSTGRES_PASSWORD }}',
-       'HOST': '{{ DBSERVER_PORT_5432_TCP_ADDR }}',
-       'PORT': '{{ DBSERVER_PORT_5432_TCP_PORT }}',
+       'HOST': 'pgsql-server',
+       'PORT': '5432',
    }
 }
 
@@ -45,5 +45,5 @@ PUBLIC_REGISTER_ENABLED = {{ TAIGA_PUBLIC_REGISTER_ENABLED }}
 
 {% if TAIGA_EVENTS_ENABLE|default('False') == 'True' %}
 EVENTS_PUSH_BACKEND = "taiga.events.backends.rabbitmq.EventsPushBackend"
-EVENTS_PUSH_BACKEND_OPTIONS = {"url": "amqp://{{ TAIGA_RABBITMQ_USER }}:{{ TAIGA_RABBITMQ_PASSWORD }}@eventserver:5672/{{ TAIGA_RABBITMQ_VHOST }}"}
+EVENTS_PUSH_BACKEND_OPTIONS = {"url": "amqp://{{ TAIGA_RABBITMQ_USER }}:{{ TAIGA_RABBITMQ_PASSWORD }}@rabbitmq-server:5672/{{ TAIGA_RABBITMQ_VHOST }}"}
 {% endif %}
