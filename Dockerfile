@@ -1,4 +1,4 @@
-FROM phusion/passenger-customizable:0.9.17
+FROM phusion/passenger-customizable:0.9.18
 
 MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
@@ -32,7 +32,8 @@ RUN apt-get update && apt-get install -y \
     build-essential binutils-doc autoconf flex bison libjpeg-dev libxml2-dev libpq-dev \
     libxslt-dev libfreetype6-dev zlib1g-dev libzmq3-dev libgdbm-dev libncurses5-dev \
     automake libtool libffi-dev tmux gettext netcat postgresql-client \
-    python3 python python3-pip python-pip python3-dev python-dev nodejs
+    python3 python python3-pip python-pip python3-dev python-dev nodejs && \
+    pip install j2cli && npm install --unsafe-perm -g coffee-script
 
 # Installing Taiga back-end
 RUN mkdir -p /home/app/taiga && \
@@ -44,8 +45,7 @@ RUN mkdir -p /home/app/taiga && \
 # Intstalling Taiga events
 RUN git clone https://github.com/taigaio/taiga-events.git /home/app/taiga/events && \
     cd /home/app/taiga/events && \
-    npm install && npm install --unsafe-perm -g coffee-script && \
-    coffee -c .
+    npm install && coffee -c .
 
 # Installing Taiga front-end
 RUN git clone https://github.com/taigaio/taiga-front-dist.git /home/app/taiga/front-end && \
@@ -55,7 +55,7 @@ RUN git clone https://github.com/taigaio/taiga-front-dist.git /home/app/taiga/fr
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Configuration
-RUN mkdir -p /home/app/taiga/conf-template && pip install j2cli
+RUN mkdir -p /home/app/taiga/conf-template
 COPY ./conf/vhost.conf.j2 /home/app/taiga/conf-template/vhost.conf.j2
 COPY ./conf/backend.conf.j2 /home/app/taiga/conf-template/backend.conf.j2
 COPY ./conf/events.conf.j2 /home/app/taiga/conf-template/events.conf.j2
@@ -68,7 +68,8 @@ RUN rm -f /etc/service/nginx/down && rm /etc/nginx/sites-enabled/default && \
 
 # Copy starting script
 COPY ./script/start.sh /etc/my_init.d/start.sh
-RUN chmod +x /etc/my_init.d/start.sh
+COPY ./script/wait-for-it.sh /usr/local/bin/wait-for-it
+RUN chmod +x /etc/my_init.d/start.sh /usr/local/bin/wait-for-it
 
 VOLUME /home/app/taiga/media
 
