@@ -4,7 +4,7 @@ MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
 ENV HOME=/root \
     DEBIAN_FRONTEND=noninteractive \
-    TAIGA_VERSION=stable \
+    TAIGA_VERSION=2.0.0 \
     TAIGA_POSTGRES_DB=taiga \
     TAIGA_POSTGRES_USER=taiga \
     TAIGA_POSTGRES_PASSWORD=password \
