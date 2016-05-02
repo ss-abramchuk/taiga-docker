@@ -37,8 +37,8 @@ wait-for-it pgsql-server:5432 -t 30
 POPULATE=false
 
 echo "Check whether taiga user exists."
-USEREXIST=$(PGPASSWORD=$POSTGRES_DEFAULT_PASSWORD psql -h pgsql-server -p 5432 -U "$POSTGRES_DEFAULT_USER" -tAc "SELECT rolname FROM pg_roles WHERE rolname='$TAIGA_POSTGRES_USER'" | wc -l)
-if [ $USEREXIST -eq 0 ]
+USEREXIST=$(PGPASSWORD=$POSTGRES_DEFAULT_PASSWORD psql -h pgsql-server -p 5432 -U "$POSTGRES_DEFAULT_USER" -tAc "SELECT rolname FROM pg_roles WHERE rolname='$TAIGA_POSTGRES_USER'")
+if [ -z "$USEREXIST" ]
 then
     echo "User doesn't exist. Creating new one."
     PGPASSWORD=$POSTGRES_DEFAULT_PASSWORD psql -h pgsql-server -p 5432 -U "$POSTGRES_DEFAULT_USER" -c "CREATE USER $TAIGA_POSTGRES_USER WITH PASSWORD '$TAIGA_POSTGRES_PASSWORD'"
@@ -46,8 +46,8 @@ then
 fi
 
 echo "Check whether taiga database exists."
-DBEXIST=$(PGPASSWORD=$POSTGRES_DEFAULT_PASSWORD psql -lqt -h pgsql-server -p 5432 -U "$POSTGRES_DEFAULT_USER" | cut -d \| -f 1 | grep -w "$TAIGA_POSTGRES_DB" | wc -l)
-if [ $DBEXIST -eq 0 ]
+DBEXIST=$(PGPASSWORD=$POSTGRES_DEFAULT_PASSWORD psql -h pgsql-server -p 5432 -U "$POSTGRES_DEFAULT_USER" -tAc "SELECT datname FROM pg_database WHERE datname='$TAIGA_POSTGRES_DB'")
+if [ -z "$DBEXIST" ]
 then
     echo "Database doesn't exist. Creating new one."
     PGPASSWORD=$POSTGRES_DEFAULT_PASSWORD psql -h pgsql-server -p 5432 -U "$POSTGRES_DEFAULT_USER" -c "CREATE DATABASE $TAIGA_POSTGRES_DB OWNER $TAIGA_POSTGRES_USER"
@@ -76,8 +76,8 @@ then
     echo "Waiting for RabbitMQ to be available..."
     wait-for-it rabbitmq-server:5672 -t 30
 
-    RABBIT_ADMIN_INSTALLED=$(which rabbitmqadmin | wc -l)
-    if [ $RABBIT_ADMIN_INSTALLED -eq 0 ]
+    RABBIT_ADMIN_INSTALLED=$(command -v rabbitmqadmin || true)
+    if [ -z "$RABBIT_ADMIN_INSTALLED" ]
     then
         echo "Util rabbitmqadmin wasn't found. Downloading..."
         wait-for-it rabbitmq-server:15672 -t 30
@@ -86,16 +86,16 @@ then
     fi
 
     echo "Check whether taiga user exists."
-    USEREXIST=$(rabbitmqadmin -H rabbitmq-server -u $RABBITMQ_DEFAULT_USER -p $RABBITMQ_DEFAULT_PASS list users | grep $TAIGA_RABBITMQ_USER | wc -l)
-    if [ $USEREXIST -eq 0 ]
+    USEREXIST=$(rabbitmqadmin -f bash -H rabbitmq-server -u $RABBITMQ_DEFAULT_USER -p $RABBITMQ_DEFAULT_PASS list users name | grep -o $TAIGA_RABBITMQ_USER)
+    if [ -z "$USEREXIST" ]
     then
         echo "User doesn't exist. Creating new one."
         rabbitmqadmin -H rabbitmq-server -u $RABBITMQ_DEFAULT_USER -p $RABBITMQ_DEFAULT_PASS declare user name=$TAIGA_RABBITMQ_USER password=$TAIGA_RABBITMQ_PASSWORD tags=administrator
     fi
 
     echo "Check whether taiga vhost exists."
-    VHOSTEXIST=$(rabbitmqadmin -H rabbitmq-server -u $RABBITMQ_DEFAULT_USER -p $RABBITMQ_DEFAULT_PASS list vhosts | grep $TAIGA_RABBITMQ_VHOST | wc -l)
-    if [ $VHOSTEXIST -eq 0 ]
+    VHOSTEXIST=$(rabbitmqadmin -f bash -H rabbitmq-server -u $RABBITMQ_DEFAULT_USER -p $RABBITMQ_DEFAULT_PASS list vhosts name | grep -o $TAIGA_RABBITMQ_VHOST)
+    if [ -z "$VHOSTEXIST" ]
     then
         echo "Vhost doesn't exist. Creating new one."
         rabbitmqadmin -H rabbitmq-server -u $RABBITMQ_DEFAULT_USER -p $RABBITMQ_DEFAULT_PASS declare vhost name=$TAIGA_RABBITMQ_VHOST
