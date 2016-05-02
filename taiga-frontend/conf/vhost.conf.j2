@@ -28,7 +28,7 @@ server {
     listen 80;
     {% endif %}
 
-    root /home/app/taiga/front-end/dist;
+    root /home/app/taiga/frontend/dist;
 
     client_header_buffer_size 16k;
     large_client_header_buffers 4 32k;
@@ -41,7 +41,7 @@ server {
     index index.html;
 
     # 50x page
-    error_page   500 502 503 504  /50x.html;
+    error_page 500 502 503 504  /50x.html;
     location = /50x.html {
         root /usr/share/nginx/html;
     }
@@ -95,17 +95,15 @@ server {
     }
 
     # Backend & Django admin access
-    location ~* (?<address>/api|/admin) {
+    location ~* (/api|/admin) {
         client_max_body_size 64M;
-
-        passenger_enabled on;
-        passenger_min_instances 1;
-        passenger_user app;
-        passenger_python /usr/bin/python3;
-
-        passenger_app_root /home/app/taiga/back-end;
-        passenger_base_uri $address;
-        passenger_app_type wsgi;
+		proxy_set_header Host $http_host;
+	    proxy_set_header X-Real-IP $remote_addr;
+	    proxy_set_header X-Scheme $scheme;
+	    proxy_set_header X-Forwarded-Proto $scheme;
+	    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	    proxy_pass http://taiga-backend:8000;
+	    proxy_redirect off;
     }
 
     # Static files
@@ -121,15 +119,15 @@ server {
 	{% if TAIGA_EVENTS_ENABLE|default('False') == 'True' %}
     # Events
     location /events {
-        passenger_enabled on;
-        passenger_min_instances 1;
-        passenger_user app;
-        passenger_nodejs /usr/bin/nodejs;
-
-        passenger_app_root /home/app/taiga/events;
-        passenger_base_uri /events;
-        passenger_app_type node;
-        passenger_startup_file index.js;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection "upgrade";
+		proxy_set_header Host $http_host;
+	    proxy_set_header X-Real-IP $remote_addr;
+	    proxy_set_header X-Scheme $scheme;
+	    proxy_set_header X-Forwarded-Proto $scheme;
+	    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	    proxy_pass http://taiga-events:9000;
+	    proxy_redirect off;
     }
 	{% endif %}
 }

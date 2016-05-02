@@ -1,0 +1,10 @@
+{
+    "app_type": "wsgi",
+    "python": "/usr/bin/python3",
+    "startup_file": "passenger_wsgi.py",
+    "environment": "production",
+    "min_instances": 1,
+    "user": "app",
+    "port": 8000,
+    "daemonize": false
+}

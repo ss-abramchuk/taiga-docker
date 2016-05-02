@@ -1,0 +1,10 @@
+{
+    "app_type": "node",
+    "nodejs": "/usr/local/bin/node",
+    "startup_file": "index.js",
+    "environment": "production",
+    "min_instances": 1,
+    "user": "app",
+    "port": 9000,
+    "daemonize": false
+}
