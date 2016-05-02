@@ -14,9 +14,9 @@ envtpl --keep-template -o /etc/nginx/sites-enabled/vhost.conf /home/app/taiga/co
 envtpl --keep-template -o /home/app/taiga/frontend/dist/conf.json /home/app/taiga/conf-template/frontend.conf.j2
 
 # Configure SSL
-if [ "$TAIGA_SSL_ENABLE" = True -a ! -z "${TAIGA_SSL_KEY}" -a ! -z "${TAIGA_SSL_CERT}" ]
+if [ "$TAIGA_SSL_ENABLE" = True -a ! -z "$TAIGA_SSL_KEY" -a ! -z "$TAIGA_SSL_CERT" ]
 then
     echo "Configure SSL."
-    echo "${TAIGA_SSL_CERT}" > /etc/nginx/certs/$TAIGA_DOMAIN.crt
-    echo "${TAIGA_SSL_KEY}" > /etc/nginx/certs/$TAIGA_DOMAIN.key
+    echo "$TAIGA_SSL_CERT" > /etc/nginx/certs/$TAIGA_DOMAIN.crt
+    echo "$TAIGA_SSL_KEY" > /etc/nginx/certs/$TAIGA_DOMAIN.key
 fi
