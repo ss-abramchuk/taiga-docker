@@ -86,7 +86,7 @@ then
     fi
 
     echo "Check whether taiga user exists."
-    USEREXIST=$(rabbitmqadmin -f bash -H rabbitmq-server -u $RABBITMQ_DEFAULT_USER -p $RABBITMQ_DEFAULT_PASS list users name | grep -o $TAIGA_RABBITMQ_USER)
+    USEREXIST=$(rabbitmqadmin -f bash -H rabbitmq-server -u $RABBITMQ_DEFAULT_USER -p $RABBITMQ_DEFAULT_PASS list users name | grep -wo $TAIGA_RABBITMQ_USER || true)
     if [ -z "$USEREXIST" ]
     then
         echo "User doesn't exist. Creating new one."
@@ -94,7 +94,7 @@ then
     fi
 
     echo "Check whether taiga vhost exists."
-    VHOSTEXIST=$(rabbitmqadmin -f bash -H rabbitmq-server -u $RABBITMQ_DEFAULT_USER -p $RABBITMQ_DEFAULT_PASS list vhosts name | grep -o $TAIGA_RABBITMQ_VHOST)
+    VHOSTEXIST=$(rabbitmqadmin -f bash -H rabbitmq-server -u $RABBITMQ_DEFAULT_USER -p $RABBITMQ_DEFAULT_PASS list vhosts name | grep -wo $TAIGA_RABBITMQ_VHOST || true)
     if [ -z "$VHOSTEXIST" ]
     then
         echo "Vhost doesn't exist. Creating new one."
