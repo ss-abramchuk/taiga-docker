@@ -16,9 +16,9 @@ RUN apt-get update && apt-get install -y python-minimal && \
     python3 /tmp/get-pip.py && pip install envtpl && \
     curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash && \
     source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && npm install -g coffee-script && \
-    ln -s $(which node) /usr/local/bin/node && \
-    ln -s $(which npm) /usr/local/bin/npm && \
-    ln -s $(which coffee) /usr/local/bin/coffee
+    ln -s $(command -v node) /usr/local/bin/node && \
+    ln -s $(command -v npm) /usr/local/bin/npm && \
+    ln -s $(command -v coffee) /usr/local/bin/coffee
 
 # Intstall Taiga events
 RUN mkdir -p /home/app/taiga && \

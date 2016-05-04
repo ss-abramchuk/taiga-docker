@@ -4,12 +4,13 @@ MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
 ENV HOME=/root \
     DEBIAN_FRONTEND=noninteractive \
-    TAIGA_VERSION=2.0.0
+    TAIGA_VERSION=2.1.0
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
-    libjpeg-dev libxml2-dev libxslt-dev libpq-dev gettext postgresql-client \
-    python3 python3-pip python3-dev && ln -s $(which python3) /usr/bin/python && \
+    libjpeg-dev libxml2-dev libxslt-dev libffi-dev libfreetype6-dev zlib1g-dev libzmq3-dev \
+    libgdbm-dev libncurses5-dev libpq-dev tmux flex bison gettext postgresql-client \
+    python3 python3-pip python3-dev && ln -s $(command -v python3) /usr/bin/python && \
     pip3 install envtpl
 
 # Install Taiga backend
