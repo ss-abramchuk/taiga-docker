@@ -4,7 +4,7 @@ MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
 ENV HOME=/root \
     DEBIAN_FRONTEND=noninteractive \
-    TAIGA_VERSION=2.1.0
+    TAIGA_VERSION=2.1.0-stable
 
 # Install dependencies
 RUN apt-get update && apt-get install -y nginx git && \
