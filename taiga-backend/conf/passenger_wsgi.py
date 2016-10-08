@@ -1,2 +1,1 @@
-import taiga.wsgi
-application = taiga.wsgi.application
+from taiga.wsgi import application
