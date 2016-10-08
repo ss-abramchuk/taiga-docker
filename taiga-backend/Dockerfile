@@ -4,7 +4,7 @@ MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
 ENV HOME=/root \
     DEBIAN_FRONTEND=noninteractive \
-    TAIGA_VERSION=2.1.0
+    TAIGA_VERSION=3.0.0
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -18,7 +18,7 @@ RUN mkdir -p /home/app/taiga && \
     git clone https://github.com/taigaio/taiga-back.git /home/app/taiga/backend && \
     mkdir -p /home/app/taiga/media /home/app/taiga/static && \
     cd /home/app/taiga/backend && git checkout $TAIGA_VERSION && \
-    pip3 install -r requirements.txt
+    pip3 install -r requirements.txt && pip3 install django-dbbackup paramiko django-storages
 
 # Clean APT
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
