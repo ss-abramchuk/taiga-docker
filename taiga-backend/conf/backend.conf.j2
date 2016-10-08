@@ -47,3 +47,11 @@ PUBLIC_REGISTER_ENABLED = {{ TAIGA_PUBLIC_REGISTER_ENABLED }}
 EVENTS_PUSH_BACKEND = "taiga.events.backends.rabbitmq.EventsPushBackend"
 EVENTS_PUSH_BACKEND_OPTIONS = {"url": "amqp://{{ TAIGA_RABBITMQ_USER }}:{{ TAIGA_RABBITMQ_PASSWORD }}@rabbitmq-server:5672/{{ TAIGA_RABBITMQ_VHOST }}"}
 {% endif %}
+
+{% if TAIGA_BACKUP_SYSTEM|default('None') != 'None' %}
+INSTALLED_APPS += ('dbbackup')
+{% if TAIGA_BACKUP_SYSTEM|default('None') == 'SFTP' %}
+DBBACKUP_STORAGE = 'storages.backends.sftpstorage.SFTPStorage'
+DBBACKUP_STORAGE_OPTIONS = {{ TAIGA_BACKUP_OPTIONS }}
+{% endif %}
+{% endif %}
