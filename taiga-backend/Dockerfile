@@ -31,9 +31,9 @@ COPY ./conf/passenger_wsgi.py /home/app/taiga/backend/passenger_wsgi.py
 COPY ./conf/Passengerfile.json /home/app/taiga/backend/Passengerfile.json
 COPY ./scripts/configure.sh /etc/my_init.d/configure.sh
 COPY ./scripts/wait-for-it.sh /usr/local/bin/wait-for-it
-COPY ./scripts/backup.sh /etc/cron.daily/backup.sh
+COPY ./scripts/backup.sh /etc/cron.daily/backup
 RUN chmod +x /etc/my_init.d/configure.sh /usr/local/bin/wait-for-it /etc/service/taiga-backend/run \
-    /etc/cron.daily/backup.sh
+    /etc/cron.daily/backup
 
 VOLUME /home/app/taiga/static /home/app/taiga/media
 
