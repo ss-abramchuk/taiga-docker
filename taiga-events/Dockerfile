@@ -1,24 +1,18 @@
-FROM ssabramchuk/passenger-docker:latest
+FROM phusion/passenger-customizable:0.9.19
 
 MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
 ENV HOME=/root \
-    DEBIAN_FRONTEND=noninteractive \
-    NVM_DIR=/usr/local/nvm \
-    NODE_VERSION=0.12
+    DEBIAN_FRONTEND=noninteractive
 
 # Replace shell with bash so we can source files
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # Install dependencies
-RUN apt-get update && apt-get install -y python-minimal && \
-    curl "https://bootstrap.pypa.io/get-pip.py" -o "/tmp/get-pip.py" && \
-    python3 /tmp/get-pip.py && pip install envtpl && \
-    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash && \
-    source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && npm install -g coffee-script && \
-    ln -s $(command -v node) /usr/local/bin/node && \
-    ln -s $(command -v npm) /usr/local/bin/npm && \
-    ln -s $(command -v coffee) /usr/local/bin/coffee
+RUN apt-get update && apt-get install -y python3 python3-pip && \
+    ln -s $(command -v python3) /usr/local/bin/python && \
+    ln -s $(command -v pip3) /usr/local/bin/pip && \
+    pip install envtpl && /pd_build/nodejs.sh && npm install -g coffee-script
 
 # Intstall Taiga events
 RUN mkdir -p /home/app/taiga && \

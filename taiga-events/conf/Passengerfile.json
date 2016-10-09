@@ -1,6 +1,6 @@
 {
     "app_type": "node",
-    "nodejs": "/usr/local/bin/node",
+    "nodejs": "/usr/bin/node",
     "startup_file": "index.js",
     "environment": "production",
     "min_instances": 1,

@@ -1,4 +1,4 @@
-FROM ssabramchuk/passenger-docker:latest
+FROM phusion/passenger-customizable:0.9.19
 
 MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
@@ -7,18 +7,18 @@ ENV HOME=/root \
     TAIGA_VERSION=3.0.0
 
 # Install dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && /pd_build/utilities.sh && /pd_build/python.sh && apt-get install -y \
     libjpeg-dev libxml2-dev libxslt-dev libffi-dev libfreetype6-dev zlib1g-dev libzmq3-dev \
     libgdbm-dev libncurses5-dev libpq-dev tmux flex bison gettext postgresql-client \
-    python3 python3-pip python3-dev && ln -s $(command -v python3) /usr/bin/python && \
-    pip3 install envtpl
+    python3-pip python3-dev && ln -s $(command -v python3) /usr/local/bin/python && \
+    ln -s $(command -v pip3) /usr/local/bin/pip && pip install envtpl
 
 # Install Taiga backend
 RUN mkdir -p /home/app/taiga && \
     git clone https://github.com/taigaio/taiga-back.git /home/app/taiga/backend && \
     mkdir -p /home/app/taiga/media /home/app/taiga/static && \
     cd /home/app/taiga/backend && git checkout $TAIGA_VERSION && \
-    pip3 install -r requirements.txt && pip3 install django-dbbackup paramiko django-storages
+    pip install -r requirements.txt && pip install django-dbbackup paramiko django-storages
 
 # Clean APT
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
