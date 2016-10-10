@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 
 export TAIGA_DOMAIN=${TAIGA_DOMAIN:-localhost}
 export TAIGA_SSL_ENABLE=${TAIGA_SSL_ENABLE:-False}

@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 
 export TAIGA_RABBITMQ_VHOST=${TAIGA_RABBITMQ_VHOST:-}
 export TAIGA_RABBITMQ_USER=${TAIGA_RABBITMQ_USER:-}
