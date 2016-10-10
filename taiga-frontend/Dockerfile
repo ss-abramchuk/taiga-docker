@@ -22,12 +22,17 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Configuration
 RUN rm -f /etc/service/nginx/down
-RUN mkdir -p /home/app/taiga/conf-template /etc/nginx/certs && rm -f /etc/nginx/sites-enabled/default
+RUN mkdir -p /home/app/taiga/conf-template /etc/nginx/certs && \
+    sed -i '/passenger.conf/s/include/# include/' /etc/nginx/nginx.conf && \
+    rm -f /etc/nginx/sites-enabled/default
 COPY ./conf/vhost.conf.j2 /home/app/taiga/conf-template/vhost.conf.j2
 COPY ./conf/frontend.conf.j2 /home/app/taiga/conf-template/frontend.conf.j2
 COPY ./conf/proxy-map.conf /etc/nginx/conf.d/proxy-map.conf
 COPY ./scripts/configure.sh /etc/my_init.d/configure.sh
 RUN chmod +x /etc/my_init.d/configure.sh
+
+# Workaround for missing group name specified in the logrotate configuration
+RUN sed -i '/su root syslog/s/syslog/adm/' /etc/logrotate.conf
 
 EXPOSE 80 443
 

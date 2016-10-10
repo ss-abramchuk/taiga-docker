@@ -9,7 +9,7 @@ ENV HOME=/root \
 # Install dependencies
 RUN apt-get update && /pd_build/utilities.sh && /pd_build/python.sh && apt-get install -y \
     libjpeg-dev libxml2-dev libxslt-dev libffi-dev libfreetype6-dev zlib1g-dev libzmq3-dev \
-    libgdbm-dev libncurses5-dev libpq-dev tmux flex bison gettext postgresql-client \
+    libgdbm-dev libncurses5-dev libpq-dev tmux flex bison gettext postgresql-client postfix \
     python3-pip python3-dev && ln -s $(command -v python3) /usr/local/bin/python && \
     ln -s $(command -v pip3) /usr/local/bin/pip && pip install envtpl
 
@@ -34,6 +34,9 @@ COPY ./scripts/wait-for-it.sh /usr/local/bin/wait-for-it
 COPY ./scripts/backup.sh /etc/cron.daily/backup
 RUN chmod +x /etc/my_init.d/configure.sh /usr/local/bin/wait-for-it /etc/service/taiga-backend/run \
     /etc/cron.daily/backup
+
+# Workaround for missing group name specified in the logrotate configuration
+RUN sed -i '/su root syslog/s/syslog/adm/' /etc/logrotate.conf
 
 VOLUME /home/app/taiga/static /home/app/taiga/media
 

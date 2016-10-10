@@ -31,6 +31,9 @@ COPY ./conf/Passengerfile.json /home/app/taiga/events/Passengerfile.json
 COPY ./scripts/configure.sh /etc/my_init.d/configure.sh
 RUN chmod +x /etc/my_init.d/configure.sh /etc/service/taiga-events/run
 
+# Workaround for missing group name specified in the logrotate configuration
+RUN sed -i '/su root syslog/s/syslog/adm/' /etc/logrotate.conf
+
 EXPOSE 9000
 
 CMD ["/sbin/my_init"]
