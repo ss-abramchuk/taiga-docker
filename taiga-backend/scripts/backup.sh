@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 if [ "$TAIGA_BACKUP_SYSTEM" != None ]
 then
     echo "Performing backup"
