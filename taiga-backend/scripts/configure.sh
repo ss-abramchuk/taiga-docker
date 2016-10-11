@@ -27,10 +27,20 @@ export TAIGA_PUBLIC_REGISTER_ENABLED=${TAIGA_PUBLIC_REGISTER_ENABLED:-False}
 export TAIGA_DEBUG=${TAIGA_DEBUG:-False}
 export TAIGA_BACKUP_SYSTEM=${TAIGA_BACKUP_SYSTEM:-None}
 export TAIGA_BACKUP_OPTIONS=${TAIGA_BACKUP_OPTIONS:-}
+export TAIGA_CRON_EMAIL=${TAIGA_CRON_EMAIL:-}
 
 # Update configuration
 echo "Update configuration files."
 envtpl --keep-template -o /home/app/taiga/backend/settings/local.py /home/app/taiga/conf-template/backend.conf.j2
+
+if [ ! -z "$TAIGA_CRON_EMAIL" ]
+then
+    envtpl --keep-template -o /etc/nullmailer/remotes /home/app/taiga/conf-template/nullmailer.conf.j2
+    sed -i "/MAILTO/s/\"\"/${TAIGA_CRON_EMAIL}/" /etc/crontab
+    echo $(hostname) > /etc/nullmailer/me
+    echo $TAIGA_DOMAIN > /etc/nullmailer/defaultdomain
+    rm -f /etc/service/nullmailer/down
+fi
 
 # Configure PostgreSQL DB for Taiga
 echo "Waiting for Postgresql to be available..."
