@@ -1,0 +1,1 @@
+{{ TAIGA_EMAIL_HOST }} smtp {% if TAIGA_EMAIL_HOST_USER != 'None' %}--user={{ TAIGA_EMAIL_HOST_USER }}{% endif %} {% if TAIGA_EMAIL_HOST_PASSWORD != 'None' %}--pass={{ TAIGA_EMAIL_HOST_PASSWORD }}{% endif %} --port={{ TAIGA_EMAIL_PORT }} {% if TAIGA_EMAIL_USE_TLS == 'True' %}--starttls{% elif TAIGA_EMAIL_USE_SSL == 'True' %}--ssl{% endif %} --insecure
