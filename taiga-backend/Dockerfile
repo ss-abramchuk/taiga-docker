@@ -9,7 +9,7 @@ ENV HOME=/root \
 # Install dependencies
 RUN apt-get update && /pd_build/utilities.sh && /pd_build/python.sh && apt-get install -y \
     libjpeg-dev libxml2-dev libxslt-dev libffi-dev libfreetype6-dev zlib1g-dev libzmq3-dev \
-    libgdbm-dev libncurses5-dev libpq-dev tmux flex bison gettext postgresql-client nullmailer \
+    libgdbm-dev libncurses5-dev libpq-dev tmux flex bison gettext postgresql-client \
     python3-pip python3-dev && ln -s $(command -v python3) /usr/local/bin/python &&\
     ln -s $(command -v pip3) /usr/local/bin/pip && pip install envtpl
 
@@ -24,19 +24,17 @@ RUN mkdir -p /home/app/taiga && \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Configuration
-RUN mkdir -p /home/app/taiga/conf-template /etc/service/taiga-backend /etc/service/nullmailer && \
-    touch /etc/service/nullmailer/down && sed -i '/SHELL/i MAILTO=""' /etc/crontab
-COPY ./services/nullmailer.sh /etc/service/nullmailer/run
+RUN mkdir -p /home/app/taiga/conf-template /etc/service/taiga-backend /var/log/cron && \
+    sed -i '/SHELL/i MAILTO=""' /etc/crontab
 COPY ./services/taiga-backend.sh /etc/service/taiga-backend/run
-COPY ./conf/nullmailer.conf.j2 /home/app/taiga/conf-template/nullmailer.conf.j2
 COPY ./conf/backend.conf.j2 /home/app/taiga/conf-template/backend.conf.j2
 COPY ./conf/passenger_wsgi.py /home/app/taiga/backend/passenger_wsgi.py
 COPY ./conf/Passengerfile.json /home/app/taiga/backend/Passengerfile.json
 COPY ./scripts/configure.sh /etc/my_init.d/configure.sh
 COPY ./scripts/wait-for-it.sh /usr/local/bin/wait-for-it
 COPY ./scripts/backup.sh /etc/cron.daily/backup
-RUN chmod +x /etc/my_init.d/configure.sh /usr/local/bin/wait-for-it /etc/service/taiga-backend/run \
-    /etc/service/nullmailer/run /etc/cron.daily/backup
+RUN chmod +x /etc/my_init.d/configure.sh /usr/local/bin/wait-for-it \
+    /etc/service/taiga-backend/run /etc/cron.daily/backup
 
 # Workaround for missing group name specified in the logrotate configuration
 RUN sed -i '/su root syslog/s/syslog/adm/' /etc/logrotate.conf
