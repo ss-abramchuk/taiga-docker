@@ -58,9 +58,7 @@ fi
 
 cd /home/app/taiga/backend
 
-python manage.py collectstatic --noinput
 python manage.py migrate --noinput
-python manage.py compilemessages
 
 if [ "$POPULATE" = true ]
 then
@@ -68,7 +66,12 @@ then
     python manage.py loaddata initial_user
     python manage.py loaddata initial_project_templates
     python manage.py loaddata initial_role
+else
+    python manage.py loaddata initial_project_templates --traceback
 fi
+
+python manage.py compilemessages
+python manage.py collectstatic --noinput
 
 cd /
 
