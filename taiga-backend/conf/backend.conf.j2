@@ -50,9 +50,13 @@ EVENTS_PUSH_BACKEND_OPTIONS = {"url": "amqp://{{ TAIGA_RABBITMQ_USER }}:{{ TAIGA
 {% endif %}
 
 {% if TAIGA_BACKUP_SYSTEM|default('None') != 'None' %}
-INSTALLED_APPS += ["dbbackup"]
 {% if TAIGA_BACKUP_SYSTEM|default('None') == 'FTP' %}
 DBBACKUP_STORAGE = 'storages.backends.ftp.FTPStorage'
+{% elif TAIGA_BACKUP_SYSTEM|default('None') == 'S3' %}
+DBBACKUP_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+{% else %}
+raise ValueError('Incorrect TAIGA_BACKUP_SYSTEM value')
 {% endif %}
 DBBACKUP_STORAGE_OPTIONS = {{ TAIGA_BACKUP_OPTIONS }}
+INSTALLED_APPS += ["dbbackup"]
 {% endif %}
