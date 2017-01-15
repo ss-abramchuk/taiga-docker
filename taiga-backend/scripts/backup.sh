@@ -2,7 +2,7 @@
 
 set -e
 
-if [ "$TAIGA_BACKUP_SYSTEM" != None ]
+if [ -n "$TAIGA_BACKUP_STORAGE" ]
 then
     BACKUP_LOG_FILE=/var/log/backup.log
     echo "[$(date -R)] Backing up taiga media folder" >> $BACKUP_LOG_FILE 2>&1
