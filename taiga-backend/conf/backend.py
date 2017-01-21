@@ -21,7 +21,7 @@ MEDIA_ROOT = '/home/app/taiga/media'
 MEDIA_URL = '{0}://{1}/media/'.format(TAIGA_SCHEME, TAIGA_DOMAIN)
 
 STATIC_ROOT = '/home/app/taiga/static'
-STATIC_URL =  '{0}://{1}/static/'.format(TAIGA_SCHEME, TAIGA_DOMAIN)
+STATIC_URL = '{0}://{1}/static/'.format(TAIGA_SCHEME, TAIGA_DOMAIN)
 
 ADMIN_MEDIA_PREFIX = '{0}://{1}/static/admin/'.format(TAIGA_SCHEME, TAIGA_DOMAIN)
 
@@ -49,14 +49,14 @@ TEMPLATE_DEBUG = TAIGA_DEBUG
 PUBLIC_REGISTER_ENABLED = True if os.getenv('TAIGA_PUBLIC_REGISTER_ENABLED', default='False') == 'True' else False
 
 TAIGA_EVENTS_ENABLE = True if os.getenv('TAIGA_EVENTS_ENABLE', default='False') == 'True' else False
-if TAIGA_EVENTS_ENABLE == True:
+if TAIGA_EVENTS_ENABLE is True:
     EVENTS_PUSH_BACKEND = "taiga.events.backends.rabbitmq.EventsPushBackend"
     EVENTS_PUSH_BACKEND_OPTIONS = {"url": "amqp://{0}:{1}@rabbitmq-server:5672/{2}".format(
         os.getenv('TAIGA_RABBITMQ_USER'), os.getenv('TAIGA_RABBITMQ_PASSWORD'), os.getenv('TAIGA_RABBITMQ_VHOST')
     )}
 
 TAIGA_BACKUP_STORAGE = os.getenv('TAIGA_BACKUP_STORAGE')
-if TAIGA_BACKUP_STORAGE != None:
+if TAIGA_BACKUP_STORAGE is not None:
     DBBACKUP_STORAGE = TAIGA_BACKUP_STORAGE
     DBBACKUP_STORAGE_OPTIONS = literal_eval(os.getenv('TAIGA_BACKUP_OPTIONS'))
 
