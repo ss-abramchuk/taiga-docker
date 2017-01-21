@@ -1,4 +1,4 @@
-FROM phusion/passenger-customizable:0.9.19
+FROM phusion/passenger-customizable:0.9.20
 
 MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
@@ -25,16 +25,17 @@ RUN mkdir -p /home/app/taiga && \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Configuration
-RUN mkdir -p /etc/service/taiga-backend /var/log/cron && sed -i '/SHELL/i MAILTO=""' /etc/crontab
+RUN mkdir -p /etc/service/taiga-backend && sed -i '/SHELL/i MAILTO=""' /etc/crontab && \
+    (crontab -l; echo "@midnight /home/app/backup >> /var/log/backup.log 2>&1") | crontab -
 COPY ./services/taiga-backend.sh /etc/service/taiga-backend/run
 COPY ./conf/backend.py /home/app/taiga/backend/settings/local.py
 COPY ./conf/passenger_wsgi.py /home/app/taiga/backend/passenger_wsgi.py
 COPY ./conf/Passengerfile.json /home/app/taiga/backend/Passengerfile.json
 COPY ./scripts/configure.sh /etc/my_init.d/configure.sh
 COPY ./scripts/wait-for-it.sh /usr/local/bin/wait-for-it
-COPY ./scripts/backup.sh /etc/cron.daily/backup
+COPY ./scripts/backup.sh /home/app/backup
 RUN chmod +x /etc/my_init.d/configure.sh /usr/local/bin/wait-for-it \
-    /etc/service/taiga-backend/run /etc/cron.daily/backup
+    /etc/service/taiga-backend/run /home/app/backup
 
 # Workaround for missing group name specified in the logrotate configuration
 RUN sed -i '/su root syslog/s/syslog/adm/' /etc/logrotate.conf
