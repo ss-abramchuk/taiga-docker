@@ -35,15 +35,12 @@ export TAIGA_BACKUP_KEEP="${TAIGA_BACKUP_KEEP:-}"
 echo "Waiting for Postgresql to be available..."
 wait-for-it pgsql-server:5432 -t 30
 
-unset POPULATE
-
 echo "Check whether taiga user exists."
 USEREXIST=$(PGPASSWORD=$POSTGRES_DEFAULT_PASS psql -h pgsql-server -p 5432 -U "$POSTGRES_DEFAULT_USER" -tAc "SELECT rolname FROM pg_roles WHERE rolname='$TAIGA_POSTGRES_USER'")
 if [ -z "$USEREXIST" ]
 then
     echo "User doesn't exist. Creating new one."
     PGPASSWORD=$POSTGRES_DEFAULT_PASS psql -h pgsql-server -p 5432 -U "$POSTGRES_DEFAULT_USER" -c "CREATE USER $TAIGA_POSTGRES_USER WITH PASSWORD '$TAIGA_POSTGRES_PASSWORD'"
-    POPULATE=true
 fi
 
 echo "Check whether taiga database exists."
@@ -52,22 +49,17 @@ if [ -z "$DBEXIST" ]
 then
     echo "Database doesn't exist. Creating new one."
     PGPASSWORD=$POSTGRES_DEFAULT_PASS psql -h pgsql-server -p 5432 -U "$POSTGRES_DEFAULT_USER" -c "CREATE DATABASE $TAIGA_POSTGRES_DB OWNER $TAIGA_POSTGRES_USER"
-    POPULATE=true
 fi
 
 cd /home/app/taiga/backend
 
+
+echo "Apply migration and populate initial data if needed"
 python manage.py migrate --noinput
 
-if [ -n "$POPULATE" ]
-then
-    echo "Populating a database with initial data."
-    python manage.py loaddata initial_user
-    python manage.py loaddata initial_project_templates
-    python manage.py loaddata initial_role
-else
-    python manage.py loaddata initial_project_templates --traceback
-fi
+python manage.py loaddata initial_user --traceback
+python manage.py loaddata initial_project_templates --traceback
+python manage.py loaddata initial_role --traceback
 
 python manage.py compilemessages
 python manage.py collectstatic --noinput
