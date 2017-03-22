@@ -59,7 +59,6 @@ python manage.py migrate --noinput
 
 python manage.py loaddata initial_user --traceback
 python manage.py loaddata initial_project_templates --traceback
-python manage.py loaddata initial_role --traceback
 
 python manage.py compilemessages
 python manage.py collectstatic --noinput
