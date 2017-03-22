@@ -9,10 +9,11 @@ ENV HOME=/root \
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # Install dependencies
-RUN apt-get update && apt-get install -y python3 python3-pip && \
+RUN curl -sL https://deb.nodesource.com/setup_7.x | bash - && \
+    apt-get update && apt-get install -y python3 python3-pip nodejs && \
     ln -s $(command -v python3) /usr/local/bin/python && \
     ln -s $(command -v pip3) /usr/local/bin/pip && \
-    pip install envtpl && /pd_build/nodejs.sh && npm install -g coffee-script
+    pip install envtpl && npm install -g coffee-script
 
 # Intstall Taiga events
 RUN mkdir -p /home/app/taiga && \
