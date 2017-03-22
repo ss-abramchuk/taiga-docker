@@ -4,7 +4,7 @@ MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
 ENV HOME=/root \
     DEBIAN_FRONTEND=noninteractive \
-    TAIGA_VERSION=3.0.0
+    TAIGA_VERSION=3.1.0
 
 # Install dependencies
 RUN apt-get update && /pd_build/utilities.sh && /pd_build/python.sh && apt-get install -y \
