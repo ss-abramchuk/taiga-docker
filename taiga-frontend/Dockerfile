@@ -1,10 +1,10 @@
-FROM phusion/passenger-customizable:0.9.19
+FROM phusion/passenger-customizable:0.9.20
 
 MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
 ENV HOME=/root \
     DEBIAN_FRONTEND=noninteractive \
-    TAIGA_VERSION=3.0.0-stable
+    TAIGA_VERSION=3.1.0-stable
 
 # Install dependencies
 RUN apt-get update && apt-get install -y python3 python3-pip && \
