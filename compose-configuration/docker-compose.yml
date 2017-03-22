@@ -1,0 +1,105 @@
+version: '2'
+services:
+    proxy-shared:
+        image: tianon/true
+        container_name: proxy-shared
+        volumes:
+            - ./proxy/certs:/etc/nginx/certs
+            - ./proxy/vhosts:/etc/nginx/vhost.d
+    db-shared:
+        image: tianon/true
+        container_name: db-shared
+        volumes:
+            - /var/lib/postgresql/data
+    taiga-shared:
+        image: tianon/true
+        container_name: taiga-shared
+        volumes:
+            - /home/app/taiga/static
+            - /home/app/taiga/media
+    proxy-server:
+        image: jwilder/nginx-proxy
+        container_name: proxy-server
+        hostname: proxy-server
+        networks:
+            - taiga-network
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes_from:
+            - proxy-shared
+        volumes:
+            - /var/run/docker.sock:/tmp/docker.sock:ro
+        restart: always
+    db-server:
+        image: postgres:9.5
+        container_name: pgsql-server
+        hostname: pgsql-server
+        networks:
+            - taiga-network
+        volumes_from:
+            - db-shared
+        env_file: ./environment/pgsql-server.env
+        restart: always
+    events-server:
+        image: rabbitmq:3.6-management
+        container_name: rabbitmq-server
+        hostname: rabbitmq-server
+        networks:
+            - taiga-network
+        env_file: ./environment/rabbitmq-server.env
+        restart: always
+    taiga-backend:
+        image: ssabramchuk/taiga-backend:3.1.0
+        container_name: taiga-backend
+        hostname: taiga-backend
+        networks:
+            - taiga-network
+        expose:
+            - "8000"
+        depends_on:
+            - db-server
+            - events-server
+        volumes_from:
+            - taiga-shared
+        env_file:
+            - ./environment/pgsql-server.env
+            - ./environment/rabbitmq-server.env
+            - ./environment/taiga.env
+        restart: always
+    taiga-events:
+        image: ssabramchuk/taiga-events:latest
+        container_name: taiga-events
+        hostname: taiga-events
+        networks:
+            - taiga-network
+        expose:
+            - "9000"
+        depends_on:
+            - events-server
+        env_file: ./environment/taiga.env
+        restart: always
+    taiga-frontend:
+        image: ssabramchuk/taiga-frontend:3.1.0
+        container_name: taiga-frontend
+        hostname: taiga-frontend
+        networks:
+            - taiga-network
+        expose:
+            - "80"
+            - "443"
+        depends_on:
+            - taiga-backend
+            - taiga-events
+        volumes_from:
+            - proxy-shared
+            - taiga-shared
+        env_file: ./environment/taiga.env
+        environment:
+            VIRTUAL_HOST: example.com
+            VIRTUAL_PROTO: https
+            VIRTUAL_PORT: 443
+        restart: always
+networks:
+    taiga-network:
+        driver: bridge
