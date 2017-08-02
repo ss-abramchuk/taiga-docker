@@ -127,6 +127,11 @@ server {
 	    proxy_set_header X-Scheme $scheme;
 	    proxy_set_header X-Forwarded-Proto $scheme;
 	    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+		proxy_connect_timeout 360s;
+		proxy_send_timeout 360s;
+		proxy_read_timeout 360s;
+
 	    proxy_pass http://taiga-events:9000;
 	    proxy_redirect off;
     }
