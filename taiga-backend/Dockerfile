@@ -18,8 +18,11 @@ RUN mkdir -p /home/app/taiga && \
     git clone https://github.com/taigaio/taiga-back.git /home/app/taiga/backend && \
     mkdir -p /home/app/taiga/media /home/app/taiga/static && \
     cd /home/app/taiga/backend && git checkout $TAIGA_VERSION && \
-    pip install -r requirements.txt && pip install django-dbbackup paramiko boto dropbox \
-    django-storages
+    pip install -r requirements.txt
+
+# Install backup dependencies
+COPY ./conf/additional-requirements.txt /home/app/taiga/backend/additional-requirements.txt
+RUN pip install -r additional-requirements.txt
 
 # Clean APT
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
