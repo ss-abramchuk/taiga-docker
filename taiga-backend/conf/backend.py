@@ -65,4 +65,8 @@ if TAIGA_BACKUP_STORAGE is not None:
     DBBACKUP_CLEANUP_KEEP = TAIGA_BACKUP_KEEP
     DBBACKUP_CLEANUP_KEEP_MEDIA = TAIGA_BACKUP_KEEP
 
+    DBBACKUP_CONNECTOR_MAPPING = {
+        'django.db.backends.postgresql': 'dbbackup.db.postgresql.PgDumpBinaryConnector'
+    }
+
     INSTALLED_APPS += ["dbbackup"]
