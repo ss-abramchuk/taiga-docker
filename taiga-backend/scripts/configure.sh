@@ -30,6 +30,7 @@ export TAIGA_DEBUG="${TAIGA_DEBUG:-}"
 export TAIGA_BACKUP_STORAGE="${TAIGA_BACKUP_STORAGE:-}"
 export TAIGA_BACKUP_OPTIONS="${TAIGA_BACKUP_OPTIONS:-}"
 export TAIGA_BACKUP_KEEP="${TAIGA_BACKUP_KEEP:-}"
+export TAIGA_BACKUP_CRON_PERIOD="${TAIGA_BACKUP_CRON_PERIOD:-@midnight}"
 
 # Configure PostgreSQL DB for Taiga
 echo "Waiting for Postgresql to be available..."
@@ -52,7 +53,6 @@ then
 fi
 
 cd /home/app/taiga/backend
-
 
 echo "Apply migration and populate initial data if needed"
 python manage.py migrate --noinput
@@ -96,6 +96,11 @@ then
         rabbitmqadmin -H rabbitmq-server -u $RABBITMQ_DEFAULT_USER -p $RABBITMQ_DEFAULT_PASS declare vhost name=$TAIGA_RABBITMQ_VHOST
         rabbitmqadmin -H rabbitmq-server -u $RABBITMQ_DEFAULT_USER -p $RABBITMQ_DEFAULT_PASS declare permission vhost=$TAIGA_RABBITMQ_VHOST user=$TAIGA_RABBITMQ_USER configure='.*' write='.*' read='.*'
     fi
+fi
+
+if [ -n "$TAIGA_BACKUP_STORAGE" ]
+then
+    echo "$TAIGA_BACKUP_CRON_PERIOD root /home/app/backup >> /var/log/backup.log 2>&1" > /etc/cron.d/backup
 fi
 
 # Store environment variables for backup cron job

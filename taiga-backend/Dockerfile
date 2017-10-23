@@ -36,8 +36,7 @@ RUN cd $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR && pip install -r additional-requireme
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Configuration
-RUN mkdir -p /etc/service/taiga-backend && sed -i '/SHELL/i MAILTO=""' /etc/crontab && \
-    echo "@midnight root /home/app/backup >> /var/log/backup.log 2>&1" >> /etc/cron.d/backup
+RUN mkdir -p /etc/service/taiga-backend && sed -i '/SHELL/i MAILTO=""' /etc/crontab
 COPY ./services/taiga-backend.sh /etc/service/taiga-backend/run
 COPY ./conf/backend.py $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR/settings/local.py
 COPY ./conf/passenger_wsgi.py $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR/passenger_wsgi.py
