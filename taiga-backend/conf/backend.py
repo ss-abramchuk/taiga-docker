@@ -68,7 +68,7 @@ if TAIGA_BACKUP_STORAGE is not None:
     DBBACKUP_CONNECTORS = {
         'default': {
             'USER': os.getenv('POSTGRES_DEFAULT_USER'),
-            'PASSWORD': os.getenv('POSTGRES_DEFAULT_USER'),
+            'PASSWORD': os.getenv('POSTGRES_DEFAULT_PASS'),
             'HOST': 'pgsql-server',
             'CONNECTOR': 'dbbackup.db.postgresql.PgDumpBinaryConnector',
             'DROP': True,
