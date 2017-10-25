@@ -103,7 +103,14 @@ then
     echo "$TAIGA_BACKUP_CRON_PERIOD root /home/app/backup >> /var/log/backup.log 2>&1" > /etc/cron.d/backup
 fi
 
-# Store environment variables for backup cron job
+# Store environment variables
+
+sed --in-place "/^POSTGRES_DEFAULT_USER/d" /etc/security/pam_env.conf || true
+echo "POSTGRES_DEFAULT_USER DEFAULT=\"${POSTGRES_DEFAULT_USER}\"" >> /etc/security/pam_env.conf
+
+sed --in-place "/^POSTGRES_DEFAULT_PASS/d" /etc/security/pam_env.conf || true
+echo "POSTGRES_DEFAULT_PASS DEFAULT=\"${POSTGRES_DEFAULT_PASS}\"" >> /etc/security/pam_env.conf
+
 env | grep TAIGA_ | while read -r LINE; do
     IFS="=" read VAR VAL <<< ${LINE}
     sed --in-place "/^${VAR}/d" /etc/security/pam_env.conf || true
