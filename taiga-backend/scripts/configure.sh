@@ -100,7 +100,8 @@ fi
 
 if [ -n "$TAIGA_BACKUP_STORAGE" ]
 then
-    echo "$TAIGA_BACKUP_CRON_PERIOD root /home/app/backup >> /var/log/backup.log 2>&1" > /etc/cron.d/backup
+    echo "$TAIGA_BACKUP_CRON_PERIOD root /home/app/scripts/dbbackup -z -c >> /var/log/backup.log 2>&1" >> /etc/cron.d/backup
+    echo "$TAIGA_BACKUP_CRON_PERIOD root /home/app/scripts/mediabackup -z -c >> /var/log/backup.log 2>&1" >> /etc/cron.d/backup
 fi
 
 # Store environment variables
