@@ -10,6 +10,9 @@ ENV HOME=/root \
     TAIGA_STATIC_DIR=static \
     TAIGA_MEDIA_DIR=media
 
+# Replace shell with bash so we can source files
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
 # Add postgresql repo
 RUN add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main" && \
     curl -s https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
@@ -36,16 +39,26 @@ RUN cd $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR && pip install -r additional-requireme
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Configuration
-RUN mkdir -p /etc/service/taiga-backend && sed -i '/SHELL/i MAILTO=""' /etc/crontab
+RUN mkdir -p /etc/service/taiga-backend /home/app/scripts && sed -i '/SHELL/i MAILTO=""' /etc/crontab
 COPY ./services/taiga-backend.sh /etc/service/taiga-backend/run
 COPY ./conf/backend.py $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR/settings/local.py
 COPY ./conf/passenger_wsgi.py $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR/passenger_wsgi.py
 COPY ./conf/Passengerfile.json $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR/Passengerfile.json
 COPY ./scripts/configure.sh /etc/my_init.d/configure.sh
 COPY ./scripts/wait-for-it.sh /usr/local/bin/wait-for-it
-COPY ./scripts/backup.sh /home/app/backup
+COPY ./scripts/backendenv.sh /home/app/scripts/backendenv
+COPY ./scripts/dbbackup.sh /home/app/scripts/dbbackup
+COPY ./scripts/dbrestore.sh /home/app/scripts/dbrestore
+COPY ./scripts/mediabackup.sh /home/app/scripts/mediabackup
+COPY ./scripts/mediarestore.sh /home/app/scripts/mediarestore
 RUN chmod +x /etc/my_init.d/configure.sh /usr/local/bin/wait-for-it \
-    /etc/service/taiga-backend/run /home/app/backup
+    /etc/service/taiga-backend/run /home/app/scripts/backendenv \
+    /home/app/scripts/dbbackup /home/app/scripts/dbrestore \
+    /home/app/scripts/mediabackup /home/app/scripts/mediarestore && \
+    ln -s /home/app/scripts/dbbackup /usr/local/bin/dbbackup && \
+    ln -s /home/app/scripts/dbrestore /usr/local/bin/dbrestore && \
+    ln -s /home/app/scripts/mediabackup /usr/local/bin/mediabackup && \
+    ln -s /home/app/scripts/mediarestore /usr/local/bin/mediarestore
 
 # Workaround for missing group name specified in the logrotate configuration
 RUN sed -i '/su root syslog/s/syslog/adm/' /etc/logrotate.conf
