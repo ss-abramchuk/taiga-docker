@@ -1,13 +1,14 @@
-FROM phusion/passenger-customizable:0.9.23
+FROM phusion/passenger-customizable:0.9.30
 
 MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
 ENV HOME=/root \
     DEBIAN_FRONTEND=noninteractive \
-    TAIGA_VERSION=3.1.0-stable
+    TAIGA_VERSION=3.2.3-stable
 
 # Install dependencies
-RUN apt-get update && apt-get install -y python3 python3-pip && \
+RUN sed -i '/minimal_apt_get_install/s/python3/python3 python3-pip python3-setuptools python3-wheel/' /pd_build/python.sh
+RUN /pd_build/python.sh && \
     ln -s $(command -v python3) /usr/local/bin/python && \
     ln -s $(command -v pip3) /usr/local/bin/pip && \
     pip install envtpl
