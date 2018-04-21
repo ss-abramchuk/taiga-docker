@@ -9,8 +9,8 @@ ENV HOME=/root \
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # Install dependencies
-RUN curl -sL https://deb.nodesource.com/setup_7.x | bash - && \
-    apt-get update && apt-get install -y python3 python3-pip nodejs && \
+RUN sed -i '/minimal_apt_get_install/s/python3/python3 python3-pip python3-setuptools python3-wheel/' /pd_build/python.sh
+RUN /pd_build/python.sh && /pd_build/nodejs.sh && \
     ln -s $(command -v python3) /usr/local/bin/python && \
     ln -s $(command -v pip3) /usr/local/bin/pip && \
     pip install envtpl && npm install -g coffee-script
