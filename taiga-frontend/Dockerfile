@@ -4,7 +4,7 @@ MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
 ENV HOME=/root \
     DEBIAN_FRONTEND=noninteractive \
-    TAIGA_VERSION=3.1.0-stable
+    TAIGA_VERSION=3.2.3-stable
 
 # Install dependencies
 RUN apt-get update && apt-get install -y python3 python3-pip && \
