@@ -1,10 +1,10 @@
-FROM phusion/passenger-customizable:0.9.30
+FROM phusion/passenger-customizable:0.9.32
 
 MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
 ENV HOME=/root \
     DEBIAN_FRONTEND=noninteractive \
-    TAIGA_VERSION=3.2.3 \
+    TAIGA_VERSION=3.3.3 \
     TAIGA_ROOT_DIR=/home/app/taiga \
     TAIGA_BACKEND_DIR=backend \
     TAIGA_STATIC_DIR=static \

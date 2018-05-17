@@ -1,10 +1,10 @@
-FROM phusion/passenger-customizable:0.9.30
+FROM phusion/passenger-customizable:0.9.32
 
 MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
 ENV HOME=/root \
     DEBIAN_FRONTEND=noninteractive \
-    TAIGA_VERSION=3.2.3-stable
+    TAIGA_VERSION=3.3.3-stable
 
 # Install dependencies
 RUN sed -i '/minimal_apt_get_install/s/python3/python3 python3-pip python3-setuptools python3-wheel/' /pd_build/python.sh
