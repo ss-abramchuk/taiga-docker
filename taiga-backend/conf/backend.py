@@ -3,6 +3,13 @@ from ast import literal_eval
 
 from .common import *
 
+TAIGA_ADMIN_USERNAME = int(os.getenv('TAIGA_ADMIN_USERNAME', default='Admin'))
+TAIGA_ADMIN_EMAIL = os.getenv('TAIGA_ADMIN_EMAIL', default='example@example.com')
+
+ADMINS = (
+    (TAIGA_ADMIN_USERNAME, TAIGA_ADMIN_EMAIL),
+)
+
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.postgresql',
