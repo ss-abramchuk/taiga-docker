@@ -14,7 +14,7 @@ RUN sed -i '/minimal_apt_get_install/s/python3/python3 python3-pip python3-setup
 RUN /pd_build/python.sh && /pd_build/nodejs.sh && \
     ln -s $(command -v python3) /usr/local/bin/python && \
     ln -s $(command -v pip3) /usr/local/bin/pip && \
-    pip install envtpl && npm install -g coffee-script
+    pip install envtpl && npm install -g coffeescript
 
 # Intstall Taiga events
 RUN mkdir -p /home/app/taiga && \
