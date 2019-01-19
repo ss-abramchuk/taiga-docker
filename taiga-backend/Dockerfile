@@ -4,7 +4,7 @@ MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
 ENV HOME=/root \
     DEBIAN_FRONTEND=noninteractive \
-    TAIGA_VERSION=3.4.4 \
+    TAIGA_VERSION=4.0.4 \
     TAIGA_ROOT_DIR=/home/app/taiga \
     TAIGA_BACKEND_DIR=backend \
     TAIGA_STATIC_DIR=static \
