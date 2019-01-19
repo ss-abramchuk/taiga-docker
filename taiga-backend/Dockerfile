@@ -1,10 +1,11 @@
-FROM phusion/passenger-customizable:0.9.35
+FROM phusion/passenger-customizable:1.0.1
 
 MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
 ENV HOME=/root \
     DEBIAN_FRONTEND=noninteractive \
-    TAIGA_VERSION=3.4.4 \
+    APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=True \
+    TAIGA_VERSION=4.0.4 \
     TAIGA_ROOT_DIR=/home/app/taiga \
     TAIGA_BACKEND_DIR=backend \
     TAIGA_STATIC_DIR=static \
@@ -14,8 +15,8 @@ ENV HOME=/root \
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # Add postgresql repo
-RUN add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main" && \
-    curl -s https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+RUN curl -s https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+RUN add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main"
 
 # Install dependencies
 RUN apt-get update && /pd_build/utilities.sh && /pd_build/python.sh && apt-get install -y \

@@ -1,9 +1,10 @@
-FROM phusion/passenger-customizable:0.9.35
+FROM phusion/passenger-customizable:1.0.1
 
 MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
 ENV HOME=/root \
-    DEBIAN_FRONTEND=noninteractive
+    DEBIAN_FRONTEND=noninteractive \
+    APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=True
 
 # Replace shell with bash so we can source files
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
@@ -13,7 +14,7 @@ RUN sed -i '/minimal_apt_get_install/s/python3/python3 python3-pip python3-setup
 RUN /pd_build/python.sh && /pd_build/nodejs.sh && \
     ln -s $(command -v python3) /usr/local/bin/python && \
     ln -s $(command -v pip3) /usr/local/bin/pip && \
-    pip install envtpl && npm install -g coffee-script
+    pip install envtpl && npm install -g coffeescript
 
 # Intstall Taiga events
 RUN mkdir -p /home/app/taiga && \
