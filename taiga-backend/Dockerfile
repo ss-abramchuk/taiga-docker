@@ -14,7 +14,7 @@ ENV HOME=/root \
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # Add postgresql repo
-RUN add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main" && \
+RUN add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" && \
     curl -s https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 
 # Install dependencies
