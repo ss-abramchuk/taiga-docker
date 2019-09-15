@@ -1,4 +1,4 @@
-FROM phusion/passenger-customizable:1.0.1
+FROM phusion/passenger-customizable:1.0.7
 
 MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
