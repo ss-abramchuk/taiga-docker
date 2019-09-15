@@ -1,0 +1,7 @@
+{
+    "url": "amqp://<%= ENV["TAIGA_RABBITMQ_USER"] %>:<%= ENV["TAIGA_RABBITMQ_PASSWORD"] %>@rabbitmq-server:5672/<%= ENV["TAIGA_RABBITMQ_VHOST"] %>",
+    "secret": "<%= ENV["TAIGA_SECRET_KEY"] %>",
+    "webSocketServer": {
+        "port": 9000
+    }
+}

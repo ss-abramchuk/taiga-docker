@@ -7,6 +7,6 @@ export TAIGA_SECRET_KEY=${TAIGA_SECRET_KEY:-insecurekey}
 
 # Update configuration
 echo "Update configuration files."
-envtpl --keep-template -o /home/app/taiga/events/config.json /home/app/taiga/conf-template/events.conf.j2
+fill_configuration /home/app/taiga/conf-template/events.conf.erb /home/app/taiga/events/config.json
 
 chown -R app /home/app/taiga
