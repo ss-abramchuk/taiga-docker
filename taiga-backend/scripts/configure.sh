@@ -57,13 +57,13 @@ fi
 cd /home/app/taiga/backend
 
 echo "Apply migration and populate initial data if needed"
-python manage.py migrate --noinput
+python3 manage.py migrate --noinput
 
-python manage.py loaddata initial_user --traceback
-python manage.py loaddata initial_project_templates --traceback
+python3 manage.py loaddata initial_user --traceback
+python3 manage.py loaddata initial_project_templates --traceback
 
-python manage.py compilemessages
-python manage.py collectstatic --noinput
+python3 manage.py compilemessages
+python3 manage.py collectstatic --noinput
 
 cd /
 
@@ -119,7 +119,7 @@ env | grep TAIGA_ | while read -r LINE; do
     echo "${VAR} DEFAULT=\"${VAL}\"" >> /etc/security/pam_env.conf
 done
 
-export PYTHONPATH="$(python3 -c "import sys; print(':'.join(sys.path))")"
+PYTHONPATH="$(python3 -c "import sys; print(':'.join(sys.path))")"
 sed --in-place "/^PYTHONPATH/d" /etc/security/pam_env.conf || true
 echo "PYTHONPATH DEFAULT=\"${PYTHONPATH}\"" >> /etc/security/pam_env.conf
 
