@@ -1,0 +1,12 @@
+{
+  "api": "<% if ENV["TAIGA_SSL_ENABLE"] == "True" %>https<% else %>http<% end %>://<%= ENV["TAIGA_DOMAIN"] %>/api/v1/",
+  "eventsUrl": "<% if ENV["TAIGA_SSL_ENABLE"] == "True" %>wss<% else %>ws<% end %>://<%= ENV["TAIGA_DOMAIN"] %>/events",
+  "debug": <%= ENV["TAIGA_DEBUG"].downcase %>,
+  "publicRegisterEnabled": <%= ENV["TAIGA_PUBLIC_REGISTER_ENABLED"].downcase %>,
+  "feedbackEnabled": true,
+  "privacyPolicyUrl": null,
+  "termsOfServiceUrl": null,
+  "maxUploadFileSize": null,
+  "gitHubClientId": null,
+  "contribPlugins": []
+}
