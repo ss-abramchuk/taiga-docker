@@ -119,7 +119,7 @@ env | grep TAIGA_ | while read -r LINE; do
     echo "${VAR} DEFAULT=\"${VAL}\"" >> /etc/security/pam_env.conf
 done
 
-PYTHONPATH="$(python -c "import sys; print(':'.join(sys.path))")"
+PYTHONPATH="$(python3 -c "import sys; print(':'.join(sys.path))")"
 sed --in-place "/^PYTHONPATH/d" /etc/security/pam_env.conf || true
 echo "PYTHONPATH DEFAULT=\"${PYTHONPATH}\"" >> /etc/security/pam_env.conf
 
