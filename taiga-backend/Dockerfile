@@ -21,20 +21,18 @@ RUN add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg
 # Install dependencies
 RUN apt-get update && /pd_build/utilities.sh && /pd_build/python.sh && apt-get install -y \
     libjpeg-dev libxml2-dev libxslt-dev libffi-dev libfreetype6-dev zlib1g-dev libzmq3-dev \
-    libgdbm-dev libncurses5-dev libpq-dev tmux flex bison gettext postgresql-client-9.6 \
-    python3-pip python3-dev && ln -s $(command -v python3) /usr/local/bin/python &&\
-    ln -s $(command -v pip3) /usr/local/bin/pip
+    libgdbm-dev libncurses5-dev libpq-dev tmux flex bison gettext postgresql-client-9.6 python3-dev && \
+    curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py && python3 /tmp/get-pip.py
 
 # Install Taiga backend
 RUN mkdir -p $TAIGA_ROOT_DIR && \
     git clone https://github.com/taigaio/taiga-back.git $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR && \
     mkdir -p $TAIGA_ROOT_DIR/$TAIGA_MEDIA_DIR $TAIGA_ROOT_DIR/$TAIGA_STATIC_DIR && \
-    cd $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR && git checkout $TAIGA_VERSION && \
-    pip install -r requirements.txt
+    cd $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR && git checkout $TAIGA_VERSION
 
-# Install backup dependencies
 COPY ./conf/additional-requirements.txt $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR/additional-requirements.txt
-RUN cd $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR && pip install -r additional-requirements.txt
+RUN cd $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR && cat additional-requirements.txt >> requirements.txt && \
+    pip3 install -r requirements.txt
 
 # Clean APT
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
