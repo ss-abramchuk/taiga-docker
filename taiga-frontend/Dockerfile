@@ -1,17 +1,10 @@
-FROM phusion/passenger-customizable:1.0.1
+FROM phusion/passenger-customizable:1.0.7
 
 MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
 ENV HOME=/root \
     DEBIAN_FRONTEND=noninteractive \
-    TAIGA_VERSION=4.1.1-stable
-
-# Install dependencies
-RUN sed -i '/minimal_apt_get_install/s/python3/python3 python3-pip python3-setuptools python3-wheel/' /pd_build/python.sh
-RUN /pd_build/python.sh && \
-    ln -s $(command -v python3) /usr/local/bin/python && \
-    ln -s $(command -v pip3) /usr/local/bin/pip && \
-    pip install envtpl
+    TAIGA_VERSION=4.2.12-stable
 
 # Install Taiga frontend
 RUN mkdir -p /home/app/taiga /home/app/taiga/media /home/app/taiga/static && \
@@ -23,14 +16,16 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Configuration
 RUN rm -f /etc/service/nginx/down
-RUN mkdir -p /home/app/taiga/conf-template /etc/nginx/certs && \
+RUN mkdir -p /home/app/scripts /home/app/taiga/conf-template /etc/nginx/certs && \
     sed -i '/passenger.conf/s/include/# include/' /etc/nginx/nginx.conf && \
     rm -f /etc/nginx/sites-enabled/default
-COPY ./conf/vhost.conf.j2 /home/app/taiga/conf-template/vhost.conf.j2
-COPY ./conf/frontend.conf.j2 /home/app/taiga/conf-template/frontend.conf.j2
+COPY ./conf/vhost.conf.erb /home/app/taiga/conf-template/vhost.conf.erb
+COPY ./conf/frontend.conf.erb /home/app/taiga/conf-template/frontend.conf.erb
 COPY ./conf/proxy-map.conf /etc/nginx/conf.d/proxy-map.conf
+COPY ./scripts/fill_configuration.rb /home/app/scripts/fill_configuration
 COPY ./scripts/configure.sh /etc/my_init.d/configure.sh
-RUN chmod +x /etc/my_init.d/configure.sh
+RUN chmod +x /home/app/scripts/fill_configuration /etc/my_init.d/configure.sh && \
+    ln -s /home/app/scripts/fill_configuration /usr/local/bin/fill_configuration
 
 # Workaround for missing group name specified in the logrotate configuration
 RUN sed -i '/su root syslog/s/syslog/adm/' /etc/logrotate.conf

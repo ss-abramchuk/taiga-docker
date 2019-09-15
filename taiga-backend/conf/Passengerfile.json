@@ -1,6 +1,6 @@
 {
     "app_type": "wsgi",
-    "python": "/usr/local/bin/python",
+    "python": "/usr/bin/python3",
     "startup_file": "passenger_wsgi.py",
     "environment": "production",
     "min_instances": 1,

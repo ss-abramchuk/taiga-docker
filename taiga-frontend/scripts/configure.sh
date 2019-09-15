@@ -10,8 +10,8 @@ export TAIGA_DEBUG=${TAIGA_DEBUG:-False}
 
 # Update configuration files
 echo "Update configuration files."
-envtpl --keep-template -o /etc/nginx/sites-enabled/vhost.conf /home/app/taiga/conf-template/vhost.conf.j2
-envtpl --keep-template -o /home/app/taiga/frontend/dist/conf.json /home/app/taiga/conf-template/frontend.conf.j2
+fill_configuration /home/app/taiga/conf-template/vhost.conf.erb /etc/nginx/sites-enabled/vhost.conf
+fill_configuration /home/app/taiga/conf-template/frontend.conf.erb /home/app/taiga/frontend/dist/conf.json
 
 # Configure SSL
 if [ "$TAIGA_SSL_ENABLE" = True -a ! -z "$TAIGA_SSL_KEY" -a ! -z "$TAIGA_SSL_CERT" ]
