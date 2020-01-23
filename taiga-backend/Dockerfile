@@ -30,8 +30,8 @@ RUN mkdir -p $TAIGA_ROOT_DIR && \
     mkdir -p $TAIGA_ROOT_DIR/$TAIGA_MEDIA_DIR $TAIGA_ROOT_DIR/$TAIGA_STATIC_DIR && \
     cd $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR && git checkout $TAIGA_VERSION
 
-COPY ./conf/additional-requirements.txt $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR/additional-requirements.txt
-RUN cd $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR && cat additional-requirements.txt >> requirements.txt && \
+COPY ./conf/additional-requirements.txt /tmp/additional-requirements.txt
+RUN cd $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR && cat /tmp/additional-requirements.txt >> requirements.txt && \
     pip3 install -r requirements.txt
 
 # Clean APT
