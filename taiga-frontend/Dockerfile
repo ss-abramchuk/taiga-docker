@@ -1,10 +1,10 @@
-FROM phusion/passenger-customizable:1.0.7
+FROM phusion/passenger-customizable:1.0.9
 
 MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
 ENV HOME=/root \
     DEBIAN_FRONTEND=noninteractive \
-    TAIGA_VERSION=4.2.12-stable
+    TAIGA_VERSION=5.0.6-stable
 
 # Install Taiga frontend
 RUN mkdir -p /home/app/taiga /home/app/taiga/media /home/app/taiga/static && \
