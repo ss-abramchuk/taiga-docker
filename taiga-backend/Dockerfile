@@ -5,7 +5,7 @@ MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 ENV HOME=/root \
     DEBIAN_FRONTEND=noninteractive \
     APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=True \
-    TAIGA_VERSION=5.0.10 \
+    TAIGA_VERSION=5.0.12 \
     TAIGA_ROOT_DIR=/home/app/taiga \
     TAIGA_BACKEND_DIR=backend \
     TAIGA_STATIC_DIR=static \
