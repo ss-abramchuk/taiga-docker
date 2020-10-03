@@ -4,7 +4,7 @@ MAINTAINER Sergio Abramchuk <ss.abramchuk@gmail.com>
 
 ENV HOME=/root \
     DEBIAN_FRONTEND=noninteractive \
-    TAIGA_VERSION=5.0.12-stable
+    TAIGA_VERSION=5.5.5-stable
 
 # Install Taiga frontend
 RUN mkdir -p /home/app/taiga /home/app/taiga/media /home/app/taiga/static && \
