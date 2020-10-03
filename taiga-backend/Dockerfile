@@ -32,7 +32,7 @@ RUN mkdir -p $TAIGA_ROOT_DIR && \
 
 COPY ./conf/additional-requirements.txt /tmp/additional-requirements.txt
 RUN cd $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR && cat /tmp/additional-requirements.txt >> requirements.txt && \
-    pip3 install -r requirements.txt
+    pip3 install --use-feature=2020-resolver -r requirements.txt
 
 # Clean APT
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
