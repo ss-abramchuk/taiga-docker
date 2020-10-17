@@ -26,9 +26,9 @@ RUN apt-get update && /pd_build/utilities.sh && /pd_build/python.sh && apt-get i
 
 # Install Taiga backend
 RUN mkdir -p $TAIGA_ROOT_DIR && \
-    git clone https://github.com/taigaio/taiga-back.git $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR && \
+    git clone --depth 1 --branch $TAIGA_VERSION https://github.com/taigaio/taiga-back.git $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR && \
     mkdir -p $TAIGA_ROOT_DIR/$TAIGA_MEDIA_DIR $TAIGA_ROOT_DIR/$TAIGA_STATIC_DIR && \
-    cd $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR && git checkout $TAIGA_VERSION
+    cd $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR
 
 COPY ./conf/additional-requirements.txt /tmp/additional-requirements.txt
 RUN cd $TAIGA_ROOT_DIR/$TAIGA_BACKEND_DIR && cat /tmp/additional-requirements.txt >> requirements.txt && \

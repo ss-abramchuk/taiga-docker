@@ -8,8 +8,8 @@ ENV HOME=/root \
 
 # Install Taiga frontend
 RUN mkdir -p /home/app/taiga /home/app/taiga/media /home/app/taiga/static && \
-    git clone https://github.com/taigaio/taiga-front-dist.git /home/app/taiga/frontend && \
-    cd /home/app/taiga/frontend && git checkout $TAIGA_VERSION
+    git clone --depth 1 --branch $TAIGA_VERSION https://github.com/taigaio/taiga-front-dist.git /home/app/taiga/frontend && \
+    cd /home/app/taiga/frontend
 
 # Clean APT
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

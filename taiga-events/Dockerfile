@@ -14,7 +14,7 @@ RUN /pd_build/nodejs.sh && npm install -g coffeescript
 
 # Intstall Taiga events
 RUN mkdir -p /home/app/taiga && \
-    git clone https://github.com/taigaio/taiga-events.git /home/app/taiga/events && \
+    git clone --depth 1 https://github.com/taigaio/taiga-events.git /home/app/taiga/events && \
     cd /home/app/taiga/events && \
     npm install && coffee -c .
 
