@@ -1,46 +1,48 @@
-version: '2'
+version: '3'
 services:
-    proxy-shared:
-        image: tianon/true
-        container_name: proxy-shared
-        volumes:
-            - ./proxy/certs:/etc/nginx/certs
-            - ./proxy/vhosts:/etc/nginx/vhost.d
-    db-shared:
-        image: tianon/true
-        container_name: db-shared
-        volumes:
-            - /var/lib/postgresql/data
-    taiga-shared:
-        image: tianon/true
-        container_name: taiga-shared
-        volumes:
-            - /home/app/taiga/static
-            - /home/app/taiga/media
     proxy-server:
         image: jwilder/nginx-proxy
         container_name: proxy-server
+        labels:
+            com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
         hostname: proxy-server
         networks:
             - taiga-network
         ports:
             - "80:80"
             - "443:443"
-        volumes_from:
-            - proxy-shared
         volumes:
+            - ./proxy/vhosts:/etc/nginx/vhost.d
+            - proxy-certs:/etc/nginx/certs
+            - proxy-html:/usr/share/nginx/html
             - /var/run/docker.sock:/tmp/docker.sock:ro
-        restart: always
+        restart: unless-stopped
+    lets-encrypt:
+        image: jrcs/letsencrypt-nginx-proxy-companion
+        container_name: lets-encrypt
+        hostname: lets-encrypt
+        networks:
+            - taiga-network
+        depends_on:
+            - proxy-server
+        volumes:
+            - ./proxy/vhosts:/etc/nginx/vhost.d
+            - proxy-certs:/etc/nginx/certs
+            - proxy-html:/usr/share/nginx/html
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+        environment:
+            REUSE_KEY: "true"
+        restart: unless-stopped
     db-server:
-        image: postgres:9.5
+        image: postgres:9.6
         container_name: pgsql-server
         hostname: pgsql-server
         networks:
             - taiga-network
-        volumes_from:
-            - db-shared
+        volumes:
+            - db-volume:/var/lib/postgresql/data
         env_file: ./environment/pgsql-server.env
-        restart: always
+        restart: unless-stopped
     events-server:
         image: rabbitmq:3.6-management
         container_name: rabbitmq-server
@@ -48,9 +50,9 @@ services:
         networks:
             - taiga-network
         env_file: ./environment/rabbitmq-server.env
-        restart: always
+        restart: unless-stopped
     taiga-backend:
-        image: ssabramchuk/taiga-backend:3.1.0
+        image: ssabramchuk/taiga-backend:5.5.5
         container_name: taiga-backend
         hostname: taiga-backend
         networks:
@@ -60,13 +62,14 @@ services:
         depends_on:
             - db-server
             - events-server
-        volumes_from:
-            - taiga-shared
+        volumes:
+            - taiga-static:/home/app/taiga/static
+            - taiga-media:/home/app/taiga/media
         env_file:
             - ./environment/pgsql-server.env
             - ./environment/rabbitmq-server.env
             - ./environment/taiga.env
-        restart: always
+        restart: unless-stopped
     taiga-events:
         image: ssabramchuk/taiga-events:latest
         container_name: taiga-events
@@ -78,9 +81,9 @@ services:
         depends_on:
             - events-server
         env_file: ./environment/taiga.env
-        restart: always
+        restart: unless-stopped
     taiga-frontend:
-        image: ssabramchuk/taiga-frontend:3.1.0
+        image: ssabramchuk/taiga-frontend:5.5.5
         container_name: taiga-frontend
         hostname: taiga-frontend
         networks:
@@ -91,15 +94,27 @@ services:
         depends_on:
             - taiga-backend
             - taiga-events
-        volumes_from:
-            - proxy-shared
-            - taiga-shared
+        volumes:
+            - ./proxy/vhosts:/etc/nginx/vhost.d
+            - proxy-certs:/etc/nginx/certs
+            - taiga-static:/home/app/taiga/static
+            - taiga-media:/home/app/taiga/media
         env_file: ./environment/taiga.env
         environment:
             VIRTUAL_HOST: example.com
             VIRTUAL_PROTO: https
             VIRTUAL_PORT: 443
-        restart: always
+            LETSENCRYPT_HOST: example.com
+            LETSENCRYPT_EMAIL: services@example.com
+        restart: unless-stopped
+
+volumes:
+    db-volume:
+    proxy-certs:
+    proxy-html:
+    taiga-static:
+    taiga-media:
+
 networks:
     taiga-network:
         driver: bridge
